@@ -1,223 +1,124 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import logo from "$assets/images/icon.webp";
-  import {
-    getInstallationDirectory,
-    getLocale,
-    setLocale,
-  } from "$lib/rpc/config";
-  import { locale as svelteLocale, _ } from "svelte-i18n";
-  import SelectLocale from "./components/SelectLocale.svelte";
-  import ChooseInstallFolder from "./components/ChooseInstallFolder.svelte";
-  import LocaleQuickChanger from "./components/LocaleQuickChanger.svelte";
+  import { AVAILABLE_LOCALES, type Locale } from "$lib/i18n/i18n";
+  import { setLocale } from "$lib/rpc/config";
+  import { getVersion } from "@tauri-apps/api/app";
+  import LanguageSelect from "/src/splash/components/SelectLanguage.svelte";
+  import ProgressStepper from "/src/splash/components/ProgressStepper.svelte";
+  import { type Step } from "./step";
+  import { type } from "@tauri-apps/plugin-os";
+  import { _ } from "svelte-i18n";
+  import { Button } from "flowbite-svelte";
+  import SelectInstallFolder from "/src/splash/components/SelectInstallFolder.svelte";
+  import SplashBackground from "/src/splash/components/SplashBackground.svelte";
+  import SplashHeader from "/src/splash/components/SplashHeader.svelte";
   import { openMainWindow } from "$lib/rpc/window";
+  import SelectLanguage from "/src/splash/components/SelectLanguage.svelte";
 
   let loaded = false;
-  let timeStartedAt = 0;
-  let minimumTime = 500;
-  let stepsToDo = [
-    {
-      statusText: "splash_step_loadingTranslations",
-      func: async () => {
-        await checkLocale();
-      },
-      waitingForInteraction: false,
-    },
-    {
-      statusText: "splash_step_checkingDirectories",
-      func: async () => {
-        await checkDirectories();
-      },
-      waitingForInteraction: false,
-    },
-  ];
-  let currentStepIndex = 0;
-  let errorText = "";
+  let clientVersion: string;
+  let isWindowControlsLeft = false;
+  let currentStep = 0;
 
-  // Events
   onMount(async () => {
-    // Ensure a default locale is set
-    await svelteLocale.set("en-US");
-    timeStartedAt = Date.now();
-    stepsToDo.push({
-      statusText: "splash_step_finishingUp",
-      func: async () => {
-        let currentTime = Date.now();
-        if (currentTime - timeStartedAt < minimumTime) {
-          await new Promise((res) =>
-            setTimeout(res, minimumTime - (currentTime - timeStartedAt)),
-          );
-        }
-        const errorClosing = await openMainWindow();
-        if (!errorClosing) {
-          errorText = $_("splash_step_errorOpening");
-        }
-      },
-      waitingForInteraction: false,
-    });
+    clientVersion = await getVersion();
+    isWindowControlsLeft = type() === "macos";
     loaded = true;
-    await proceedInSteps(false, false);
   });
 
-  async function proceedInSteps(stepForward: boolean, stepBackward: boolean) {
-    if (stepForward) {
-      currentStepIndex++;
-      if (currentStepIndex >= stepsToDo.length) {
-        currentStepIndex = stepsToDo.length - 1;
+  $: steps = () => {
+    return [
+      {
+        displayText: $_("splash_selectLocale")
+      },
+      {
+        displayText: $_("splash_button_setInstallFolder")
+      },
+      {
+        displayText: $_("setup_done")
       }
-    }
-    if (stepBackward) {
-      currentStepIndex--;
-      if (currentStepIndex < 0) {
-        currentStepIndex = 0;
-      }
-    }
-    // Process as many steps as we can
-    while (
-      currentStepIndex < stepsToDo.length &&
-      !stepsToDo[currentStepIndex].waitingForInteraction
-    ) {
-      await new Promise((res) => setTimeout(res, 125));
-      await stepsToDo[currentStepIndex].func();
-      currentStepIndex++;
-    }
-    if (currentStepIndex >= stepsToDo.length) {
-      currentStepIndex = stepsToDo.length - 1;
+    ] satisfies Step[];
+  };
+
+  $: isFirstStep = () => {
+    return currentStep === 0;
+  };
+
+  $: isFinalStep = () => {
+    return currentStep === steps().length - 1;
+  };
+
+  async function progressStep() {
+    currentStep++;
+    if (isFinalStep()) {
+      const errorClosing = await openMainWindow();
     }
   }
 
-  async function checkLocale() {
-    const locale = await getLocale();
-    if (locale === null) {
-      // Prompt the user to select a locale
-      stepsToDo.splice(currentStepIndex + 1, 0, {
-        statusText: "splash_selectLocale",
-        waitingForInteraction: true,
-        func: async () => {},
-      });
-    } else {
-      // Set locale and continue
-      setLocale(locale);
-    }
+  async function selectLocale(locale: Locale) {
+    await setLocale(locale.id);
+    await progressStep();
   }
 
-  async function checkDirectories() {
-    // Check to see if the install dir has been setup or not
-    const install_dir = await getInstallationDirectory();
-    if (install_dir === null) {
-      // If not -- let's ask the user to set one up
-      stepsToDo.splice(currentStepIndex + 1, 0, {
-        statusText: "splash_noInstallDirSet",
-        waitingForInteraction: true,
-        func: async () => {},
-      });
-    }
-  }
-
-  async function handleLocaleChange(event: any, forStep: boolean) {
-    await setLocale(event.detail.newLocale);
-    if (forStep) {
-      await proceedInSteps(true, false);
-    }
+  async function setFolder(folder: string) {
+    await progressStep();
   }
 </script>
 
-<div class="content" data-tauri-drag-region>
+<SplashHeader />
+
+<div class="splash-container">
+  <!-- Background With two images -->
+  <SplashBackground />
+
   {#if loaded}
-    <div class="splash-logo pointer-events-none">
-      <img
-        src={logo}
-        data-testId="splash-logo"
-        alt="OpenGOAL logo"
-        aria-label="OpenGOAL logo"
-        draggable="false"
-      />
-    </div>
-    <div class="splash-contents pointer-events-none">
-      {#if errorText !== ""}
-        <div class="splash-status-text">
-          {errorText}
+    <div class="splash-content">
+      <div class="flex flex-shrink-0 flex-row items-center justify-center">
+        <h1 class="text-4xl mt-16">{steps()[currentStep].displayText}</h1>
+      </div>
+      <div class="flex flex-col flex-grow min-h-0 justify-center items-center p-2">
+
+        <div class="flex flex-col flex-grow min-h-0 pt-8 pb-16 w-full">
+          {#if currentStep === 0}
+            <LanguageSelect
+              on:change={(locale) => selectLocale(locale.detail.locale)}
+            />
+          {:else if currentStep === 1}
+            <SelectInstallFolder on:setFolder={(folder) => setFolder(folder.detail.folder)} />
+          {:else}
+            <div class="flex-grow"></div>
+          {/if}
         </div>
-      {:else if stepsToDo[currentStepIndex].statusText === "splash_selectLocale"}
-        <div class="splash-status-text">
-          {$_(stepsToDo[currentStepIndex].statusText)}
+
+        <div class="self-start text-background font-default-shadow">
+          {$_("header_launcherVersionLabel")} v{clientVersion}
         </div>
-        <SelectLocale on:change={(evt) => handleLocaleChange(evt, true)} />
-      {:else if stepsToDo[currentStepIndex].statusText === "splash_noInstallDirSet"}
-        <ChooseInstallFolder
-          on:complete={async () => {
-            await proceedInSteps(true, false);
-          }}
-        />
-      {:else}
-        <div class="splash-status-text">
-          {$_(stepsToDo[currentStepIndex].statusText)}
-        </div>
-      {/if}
+      </div>
     </div>
-    <div class="splash-bar">
-      <div
-        data-tauri-drag-region
-        class="splash-status-bar fg"
-        style="width: {((currentStepIndex + 1) / stepsToDo.length) * 100}%"
-      />
-      <div data-tauri-drag-region class="splash-status-bar bg" />
-    </div>
-    {#if stepsToDo[currentStepIndex].statusText === "splash_noInstallDirSet"}
-      <LocaleQuickChanger on:change={(evt) => handleLocaleChange(evt, false)} />
-    {/if}
   {/if}
+
+
+  <div>
+    <Button class="bg-primary text-primary hover:bg-primary-hover hover:text-primary-hover rounded">
+      {$_("setup_button_continue")}
+    </Button>
+  </div>
 </div>
 
-<style>
-  .content {
-    color: white;
-    height: 100%;
-    padding-top: 10px;
-    padding-bottom: 10px;
+<style lang="postcss">
+  @import "./splash.css";
+
+  .splash-container {
+    @apply relative flex-grow text-background;
   }
 
-  .splash-contents {
-    height: 35%;
-    align-items: center;
-    justify-content: center;
-    font-family: "Twemoji Country Flags", "Noto Sans Mono", monospace;
-    font-size: 10pt;
-    text-align: center;
-    padding-left: 10px;
-    padding-right: 10px;
-    display: flex;
-    flex-direction: column;
+  .splash-content {
+    @apply absolute inset-0 z-20 flex flex-col;
   }
 
-  .splash-bar {
-    height: 10%;
-  }
 
-  .splash-logo {
-    height: 50%;
-  }
-
-  .splash-logo img {
-    object-fit: contain;
-    height: 100%;
-    width: 100%;
-  }
-
-  .splash-status-bar {
-    width: 100%;
-    height: 15px;
-    margin-top: auto;
-  }
-
-  .splash-status-bar.bg {
-    background-color: #775500;
-    position: absolute;
-  }
-
-  .splash-status-bar.fg {
-    background-color: #ffb807;
-    position: absolute;
-    z-index: 999;
+  .splash-content__centered {
+    @apply flex flex-col flex-grow justify-center items-center;
+    @apply flex-grow p-2 gap-5;
   }
 </style>

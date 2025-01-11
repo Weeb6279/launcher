@@ -1,0 +1,61 @@
+/* Write your global styles here, in PostCSS syntax */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --line-height: 1.75em;
+}
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, .5);
+  box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+}
+
+.font-default-shadow {
+  text-shadow: 1px 1px 2px black;
+}
+
+.default-font {
+  font-family:
+
+      /*
+      * These fonts have been tested for Windows 10 with German Language Pack installed.
+      * Test for other language packs and operating systems has not been done yet.
+      * This should be tested for jumping font sizes in the splash screen.
+      * We don't want languages like arabic, japanese, chinese, taiwanese or hebrew to make fonts grow to different sizes when selecting them.
+      */
+    "Twemoji Country Flags",
+    /* EMOJI FLAGS */ "Noto Sans Mono",
+    /* LATIN SCRIPT */ "Segoe UI Semibold",
+    /* ARABIC SCRIPT */ "Yu Gothic",
+    /* JAPANESE/TAIWANESE/SIMPLIFIED CHINESE SCRIPT */ "微軟正黑體",
+    /* TRADITIONAL CHINESE SCRIPT */ "Courier New",
+    /* FALLBACK FOR MISSING FONTS */ sans-serif; /* FALLBACK FOR MISSING FONTS */
+
+  font-weight: 400;
+  line-height: var(--line-height);
+}
+
+.h-2l {
+  height: calc(var(--line-height) * 2);
+}
+
+.not-draggable {
+  -webkit-user-drag: none;
+  @apply pointer-events-none;
+}
+
+#app {
+  @apply flex flex-col select-none;
+}
+
+#app * {
+  @apply default-font;
+  @apply focus-within:ring-0;
+}

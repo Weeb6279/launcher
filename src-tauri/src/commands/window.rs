@@ -1,7 +1,10 @@
 use std::path::Path;
 
-use tauri::Manager;
+#[cfg(target_os = "macos")]
+use tauri::TitleBarStyle;
 
+use tauri::{AppHandle, Manager, WebviewWindowBuilder, Wry};
+use tauri::utils::TitleBarStyle;
 use super::CommandError;
 
 #[tauri::command]
@@ -28,23 +31,28 @@ pub async fn open_main_window(handle: tauri::AppHandle) -> Result<(), CommandErr
   //   "decorations": false
   // },
   log::info!("Creating main window");
-  tauri::WebviewWindowBuilder::new(
+  let mut window = tauri::WebviewWindowBuilder::new(
     &handle,
     "main", /* the unique window label */
     tauri::WebviewUrl::App("index.html".parse().unwrap()),
   )
   .title("OpenGOAL Launcher")
-  .resizable(false)
+  .resizable(true)
   .fullscreen(false)
   .visible(true)
   .center()
-  .decorations(false)
-  .inner_size(800.0, 600.0)
-  .focused(true)
+  .inner_size(1387.0, 780.0)
+  .focused(true);
+
+  window = set_window_config(window);
+
+
+  window
   .build()
   .map_err(|_| {
     CommandError::WindowManagement("Unable to create main launcher window".to_owned())
   })?;
+
   log::info!("Closing splash window");
   // Close splashscreen
   if let Some(splashscreen) = handle.app_handle().get_webview_window("splashscreen") {
@@ -69,4 +77,20 @@ pub async fn open_dir_in_os(directory: String) -> Result<(), CommandError> {
   crate::util::os::open_dir_in_os(folder_path.to_string_lossy().into_owned())
     .map_err(|_| CommandError::OSOperation("Unable to go to open folder in OS".to_owned()))?;
   Ok(())
+}
+
+
+#[cfg(target_os = "macos")]
+pub fn set_window_config(window: WebviewWindowBuilder<Wry, AppHandle>) -> WebviewWindowBuilder<Wry, AppHandle> {
+
+  return window
+      .decorations(true)
+      .hidden_title(true)
+      .title_bar_style(TitleBarStyle::Overlay);
+}
+
+#[cfg(not(target_os = "macos"))]
+pub fn set_window_config(window: WebviewWindowBuilder<Wry, AppHandle>) -> WebviewWindowBuilder<Wry, AppHandle> {
+  return window
+      .decorations(false);
 }

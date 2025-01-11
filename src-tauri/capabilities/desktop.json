@@ -6,10 +6,12 @@
     "linux"
   ],
   "windows": [
-    "main"
+    "main",
+    "splashscreen"
   ],
   "permissions": [
     "updater:default",
-    "global-shortcut:default"
+    "global-shortcut:default",
+    "core:window:allow-toggle-maximize"
   ]
 }
