@@ -23,14 +23,4 @@ export default defineConfig({
     },
   },
   optimizeDeps: { exclude: ["svelte-navigator"] },
-  build: {
-    rollupOptions: {
-      input: {
-        main: fileURLToPath(new URL("./index.html", import.meta.url)),
-        splash: fileURLToPath(
-          new URL("./src/splash/index.html", import.meta.url),
-        ),
-      },
-    },
-  },
 });

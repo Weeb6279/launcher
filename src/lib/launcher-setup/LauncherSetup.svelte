@@ -3,24 +3,22 @@
   import { type Locale } from "$lib/i18n/i18n";
   import { setLocale } from "$lib/rpc/config";
   import { getVersion } from "@tauri-apps/api/app";
-  import SelectLanguage from "/src/splash/components/SelectLanguage.svelte";
+  import SelectLanguage from "$lib/launcher-setup/components/SelectLanguage.svelte";
   import { type Step } from "./step";
-  import { type } from "@tauri-apps/plugin-os";
   import { _ } from "svelte-i18n";
-  import SelectInstallFolder from "/src/splash/components/SelectInstallFolder.svelte";
-  import SplashBackground from "/src/splash/components/SplashBackground.svelte";
-  import SplashHeader from "/src/splash/components/SplashHeader.svelte";
-  import { openMainWindow } from "$lib/rpc/window";
+  import SelectInstallFolder from "$lib/launcher-setup/components/SelectInstallFolder.svelte";
+  import SplashBackground from "$lib/launcher-setup/components/SplashBackground.svelte";
+  import SplashHeader from "$lib/launcher-setup/components/SplashHeader.svelte";
+  import { getCurrentWindow } from "@tauri-apps/api/window";
 
   let loaded = false;
   let clientVersion: string;
-  let isWindowControlsLeft = false;
   let currentStep = 0;
 
   onMount(async () => {
     clientVersion = await getVersion();
-    isWindowControlsLeft = type() === "macos";
-    loaded = false;
+    await getCurrentWindow().show();
+    loaded = true;
   });
 
   $: steps = () => {
@@ -48,7 +46,7 @@
   async function progressStep() {
     currentStep++;
     if (isFinalStep()) {
-      const errorClosing = await openMainWindow();
+      // TODO: notify app that setup is done
     }
   }
 
@@ -91,17 +89,11 @@
           {$_("header_launcherVersionLabel")} v{clientVersion}
         </div>
       </div>
-    {:else}
-      <div>
-
-      </div>
-    {/if}
+    {/if} <!-- TODO: add loading spinner here if load takes too long in future -->
   </div>
 </div>
 
 <style lang="postcss">
-  @import "./splash.css";
-
   .splash-container {
     @apply relative flex-grow text-background;
   }

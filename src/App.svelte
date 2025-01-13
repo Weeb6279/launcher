@@ -1,6 +1,5 @@
 <script lang="ts">
+import LauncherSetup from "$lib/launcher-setup/LauncherSetup.svelte";
 </script>
 
-<div class={`container h-screen max-w-none flex flex-col bg-black`}>
-  APP
-</div>
+<LauncherSetup/>
