@@ -1,19 +1,16 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { AVAILABLE_LOCALES, type Locale } from "$lib/i18n/i18n";
+  import { type Locale } from "$lib/i18n/i18n";
   import { setLocale } from "$lib/rpc/config";
   import { getVersion } from "@tauri-apps/api/app";
-  import LanguageSelect from "/src/splash/components/SelectLanguage.svelte";
-  import ProgressStepper from "/src/splash/components/ProgressStepper.svelte";
+  import SelectLanguage from "/src/splash/components/SelectLanguage.svelte";
   import { type Step } from "./step";
   import { type } from "@tauri-apps/plugin-os";
   import { _ } from "svelte-i18n";
-  import { Button } from "flowbite-svelte";
   import SelectInstallFolder from "/src/splash/components/SelectInstallFolder.svelte";
   import SplashBackground from "/src/splash/components/SplashBackground.svelte";
   import SplashHeader from "/src/splash/components/SplashHeader.svelte";
   import { openMainWindow } from "$lib/rpc/window";
-  import SelectLanguage from "/src/splash/components/SelectLanguage.svelte";
 
   let loaded = false;
   let clientVersion: string;
@@ -23,7 +20,7 @@
   onMount(async () => {
     clientVersion = await getVersion();
     isWindowControlsLeft = type() === "macos";
-    loaded = true;
+    loaded = false;
   });
 
   $: steps = () => {
@@ -71,8 +68,8 @@
   <!-- Background With two images -->
   <SplashBackground />
 
-  {#if loaded}
-    <div class="splash-content">
+  <div class="splash-content">
+    {#if loaded}
       <div class="flex flex-shrink-0 flex-row items-center justify-center">
         <h1 class="text-4xl mt-16">{steps()[currentStep].displayText}</h1>
       </div>
@@ -80,7 +77,7 @@
 
         <div class="flex flex-col flex-grow min-h-0 pt-8 pb-16 w-full">
           {#if currentStep === 0}
-            <LanguageSelect
+            <SelectLanguage
               on:change={(locale) => selectLocale(locale.detail.locale)}
             />
           {:else if currentStep === 1}
@@ -94,14 +91,11 @@
           {$_("header_launcherVersionLabel")} v{clientVersion}
         </div>
       </div>
-    </div>
-  {/if}
+    {:else}
+      <div>
 
-
-  <div>
-    <Button class="bg-primary text-primary hover:bg-primary-hover hover:text-primary-hover rounded">
-      {$_("setup_button_continue")}
-    </Button>
+      </div>
+    {/if}
   </div>
 </div>
 
