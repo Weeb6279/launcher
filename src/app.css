@@ -59,3 +59,7 @@
   @apply default-font;
   @apply focus-within:ring-0;
 }
+
+.main-content-centered {
+  @apply flex flex-col flex-grow min-h-0 justify-center items-center p-2;
+}
