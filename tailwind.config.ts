@@ -3,6 +3,7 @@ import flowBite from "flowbite/plugin";
 
 export default {
   content: [
+    "./index.html",
     "./src/**/*.{html,js,svelte,ts}",
     "./node_modules/flowbite-svelte/**/*.{html,js,svelte,ts}",
     "./node_modules/@tauri-controls/svelte/**/*.{js,svelte,ts}"
