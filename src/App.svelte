@@ -1,12 +1,12 @@
 <script lang="ts">
   import WindowHeader from "/src/lib/components/window/WindowHeader.svelte";
   import WindowBackground from "/src/lib/components/window/WindowBackground.svelte";
-  import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
+  import LoadingSpinner from "$lib/components/window/LoadingSpinner.svelte";
   import LauncherSetup from "/src/routes/launcher-setup/LauncherSetup.svelte";
   import { navigate, Route, Router } from "svelte-navigator";
   import { onMount } from "svelte";
   import { AppStore } from "$lib/stores/AppStore";
-  import LauncherVersion from "$lib/components/LauncherVersion.svelte";
+  import LauncherVersion from "$lib/components/window/LauncherVersion.svelte";
   import GameSelection from "/src/routes/game-selection/GameSelection.svelte";
 
   onMount(async () => {

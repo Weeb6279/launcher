@@ -35,6 +35,18 @@ export async function setInstallationDirectory(
   return errMsg;
 }
 
+export async function saveActiveVersionChange(
+  newActiveVersion: String,
+): Promise<boolean> {
+  return invoke_rpc(
+    "update_setting_value",
+    { key: "active_version", val: newActiveVersion },
+    () => false,
+    "Couldn't save active version change",
+    () => true,
+  );
+}
+
 export async function getLocale(): Promise<string | null> {
   return await invoke_rpc(
     "get_setting_value",
@@ -93,5 +105,21 @@ export async function setLocale(localeId: string): Promise<void> {
         );
       }
     },
+  );
+}
+
+export async function setAutoUpdateGames(value: boolean): Promise<void> {
+  return await invoke_rpc(
+    "update_setting_value",
+    { key: "auto_update_games", val: value },
+    () => {},
+  );
+}
+
+export async function getAutoUpdateGames(): Promise<boolean> {
+  return await invoke_rpc(
+    "get_setting_value",
+    { key: "auto_update_games" },
+    () => false,
   );
 }

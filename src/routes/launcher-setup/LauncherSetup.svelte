@@ -1,7 +1,15 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { type Locale } from "$lib/i18n/i18n";
-  import { getInstallationDirectory, getLocale, setInstallationDirectory, setLocale } from "$lib/rpc/config";
+  import {
+    getAutoUpdateGames,
+    getInstallationDirectory,
+    getLocale,
+    saveActiveVersionChange,
+    setAutoUpdateGames,
+    setInstallationDirectory,
+    setLocale
+  } from "$lib/rpc/config";
   import SelectLanguage from "/src/routes/launcher-setup/components/SelectLanguage.svelte";
   import { type Step } from "/src/routes/launcher-setup/types/step";
   import { _, isLoading, locale as svelteLocale } from "svelte-i18n";
@@ -11,12 +19,15 @@
   import { getActiveVersion } from "$lib/rpc/versions";
   import { getVersion } from "@tauri-apps/api/app";
   import SelectTooling from "/src/routes/launcher-setup/components/SelectTooling.svelte";
+  import type { SelectToolingVersionData } from "/src/routes/launcher-setup/types/selectToolingVersion";
+  import { downloadOfficialVersion } from "$lib/rpc/versions.js";
+  import { getLatestOfficialRelease } from "$lib/utils/github";
+  import semver from "semver/preload";
 
   let currentStep = 0;
 
   onMount(async () => {
     $AppStore.launcher.activeVersion = await getVersion();
-    console.log($AppStore.launcher.activeVersion);
 
     const locale = await getLocale();
     if (locale == null) {
@@ -38,10 +49,19 @@
     console.log(activeToolingVersion);
     if (activeToolingVersion == null) {
       $AppStore.selectedTooling.activeVersion = undefined;
+      $AppStore.selectedTooling.autoUpdate = true;
       $AppStore.isLoading = false;
       return;
     }
     $AppStore.selectedTooling.activeVersion = activeToolingVersion;
+    $AppStore.selectedTooling.autoUpdate = await getAutoUpdateGames();
+
+    const latestVersion = await getLatestOfficialRelease();
+    if (latestVersion != null) {
+      $AppStore.selectedTooling.versionNumber = latestVersion.version;
+      $AppStore.selectedTooling.updateAvailable = semver.gt(latestVersion.version, activeToolingVersion);
+    }
+
     progressStep();
 
   });
@@ -90,8 +110,23 @@
     progressStep();
   }
 
-  async function setToolingVersion(toolingVersion: string) {
-    $AppStore.selectedTooling.activeVersion = toolingVersion;
+  async function setToolingVersion(toolingVersion: SelectToolingVersionData) {
+    if (toolingVersion.toolingVersion.downloadUrl == null) {
+      console.log("TODO: make toast notification or something. This should not happen ever");
+      return;
+    }
+
+    $AppStore.isLoading = true;
+
+    // download first so the select tooling version page pops up after crash/user exit
+    await downloadOfficialVersion(toolingVersion.toolingVersion.version, toolingVersion.toolingVersion.downloadUrl);
+    await saveActiveVersionChange(toolingVersion.toolingVersion.version);
+    await setAutoUpdateGames(toolingVersion.autoUpdate);
+
+    $AppStore.isLoading = true;
+
+    $AppStore.selectedTooling.activeVersion = toolingVersion.toolingVersion.version;
+    $AppStore.selectedTooling.autoUpdate = toolingVersion.autoUpdate;
     progressStep();
   }
 
@@ -102,7 +137,7 @@
 </div>
 
 <div class="flex flex-col flex-grow min-h-0 pt-8 pb-16 w-full">
-  {#if currentStep === 0}
+  {#if currentStep === 0 && !$AppStore.isLoading}
     <SelectLanguage
       on:change={(locale) => selectLocale(locale.detail.locale)}
     />
@@ -110,7 +145,7 @@
     <SelectInstallFolder on:setFolder={(folder) => setFolder(folder.detail.folder)} />
 
   {:else if currentStep === 2}
-    <SelectTooling on:setToolingVersion={(tooling) => setToolingVersion(tooling.detail.toolingVersion)} />
+    <SelectTooling on:setToolingVersion={(tooling) => setToolingVersion(tooling.detail)} />
   {:else}
     <div class="flex-grow"></div>
   {/if}

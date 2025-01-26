@@ -11,8 +11,13 @@
     </span>
   {/if}
   {#if $AppStore.selectedTooling.activeVersion != null}
-    <span>
-      {$_("header_toolingVersionLabel")} {$AppStore.selectedTooling.activeVersion}
-    </span>
+    <div>
+      <span>
+        {$_("header_toolingVersionLabel")} {$AppStore.selectedTooling.activeVersion}
+      </span>
+      {#if $AppStore.selectedTooling.updateAvailable && $AppStore.isSetupCompleted}
+        <span class="text-secondary text-sm">Update Available</span>
+      {/if}
+    </div>
   {/if}
 </div>
