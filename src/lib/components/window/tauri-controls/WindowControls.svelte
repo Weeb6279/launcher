@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { osType } from "$lib/tauri-controls/utils/os"
-  import { cn } from "$lib/tauri-controls/utils/utils"
+  import { osType } from "$lib/components/window/tauri-controls/utils/os"
+  import { cn } from "$lib/components/window/tauri-controls/utils/utils"
   import Gnome from "./controls/linux/Gnome.svelte"
   import Windows from "./controls/Windows.svelte"
 

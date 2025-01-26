@@ -1,13 +1,13 @@
 <script lang="ts">
-  import Button from "$lib/tauri-controls/components/Button.svelte"
-  import Icons from "$lib/tauri-controls/components/Icons.svelte"
-  import { cn } from "$lib/tauri-controls/utils/utils"
+  import Button from "$lib/components/window/tauri-controls/components/Button.svelte"
+  import Icons from "$lib/components/window/tauri-controls/components/Icons.svelte"
+  import { cn } from "$lib/components/window/tauri-controls/utils/utils"
   import {
     closeWindow,
     initializeAppWindow,
     maximizeWindow,
     minimizeWindow
-  } from "$lib/tauri-controls/utils/window"
+  } from "$lib/components/window/tauri-controls/utils/window"
   import { onMount } from "svelte"
 
   const isWindowMaximized = 0

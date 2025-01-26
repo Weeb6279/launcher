@@ -5,6 +5,7 @@
 
 :root {
   --line-height: 1.75em;
+  --bg-primary: #f77223;
 }
 ::-webkit-scrollbar {
   -webkit-appearance: none;

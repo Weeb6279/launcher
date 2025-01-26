@@ -4,6 +4,44 @@ import { AVAILABLE_LOCALES } from "$lib/i18n/i18n";
 import { exists } from "@tauri-apps/plugin-fs";
 import { appDataDir, join } from "@tauri-apps/api/path";
 import { convertFileSrc } from "@tauri-apps/api/core";
+import { errorLog } from "$lib/rpc/logging";
+
+export async function getInstallationDirectory(): Promise<string | null> {
+  return await invoke_rpc(
+    "get_setting_value",
+    { key: "install_directory" },
+    () => null,
+  );
+}
+
+export async function setInstallationDirectory(
+  newDir: string,
+): Promise<string | null> {
+  // TODO - not insanely crazy about this pattern (message in the response instead of the error)
+  // consider changing it
+  const errMsg = await invoke_rpc(
+    "set_install_directory",
+    { newDir: newDir },
+    () => "Unexpected error occurred",
+    "Invalid installation directory",
+  );
+
+  if (errMsg !== null) {
+    // for RPC errors the log and toast are done by invoke_rpc
+    // but this is a successful RPC, so we need to do it here
+    errorLog("Unable to set install directory");
+  }
+
+  return errMsg;
+}
+
+export async function getLocale(): Promise<string | null> {
+  return await invoke_rpc(
+    "get_setting_value",
+    { key: "locale" },
+    () => "en-US",
+  );
+}
 
 export async function setLocale(localeId: string): Promise<void> {
   return await invoke_rpc(

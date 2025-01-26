@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { cn } from "$lib/tauri-controls/utils/utils"
+  import { cn } from "$lib/components/window/tauri-controls/utils/utils"
 </script>
 
 <button

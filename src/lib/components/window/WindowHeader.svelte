@@ -1,6 +1,6 @@
 <script lang="ts">
   import textLogo from "$assets/images/text-logo.webp";
-  import WindowControls from "$lib/tauri-controls/WindowControls.svelte";
+  import WindowControls from "$lib/components/window/tauri-controls/WindowControls.svelte";
   import { type } from "@tauri-apps/plugin-os";
 
 

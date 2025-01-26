@@ -14,7 +14,7 @@ export default {
       backgroundColor: {
         background: 'rgb(26, 18, 14)',
         'background-hover': 'rgb(26, 18, 14)',
-        primary: '#f77223',
+        primary: 'var(--bg-primary)',
         'primary-hover': '#f75c00',
         secondary: '#311c10',
         'secondary-hover': '#4d2a16'

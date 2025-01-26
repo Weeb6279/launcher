@@ -1,68 +1,26 @@
-<div class="loader">
-  <div class="main-body"></div>
-  <div class="orb-wrapper">
-    <div class="orb1 orb"></div>
-    <div class="orb2 orb"></div>
-    <div class="orb3 orb"></div>
-    <div class="orb4 orb"></div>
-  </div>
-</div>
+<div class="loader"></div>
 
 <style lang="postcss">
   .loader {
-    width: calc(100px - 24px);
-    height: 50px;
     position: relative;
+    width: 100px;
+    height: 100px;
   }
 
-  .loader .orb {
-    content: "";
+  .loader:before , .loader:after{
+    content: '';
+    border-radius: 50%;
     position: absolute;
     inset: 0;
-    margin: auto;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: red;
-    transform-origin: -24px 50%;
-    animation: spin 2s infinite linear;
-    z-index: 10;
+    box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.3) inset;
+  }
+  .loader:after {
+    box-shadow: 0 2px 0 var(--bg-primary) inset;
+    animation: rotate 2s linear infinite;
   }
 
-  .orb3 {
-    animation-delay: -1s!important;
-  }
-
-  .loader .main-body {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50% , -50%);
-    background: orange;
-    width: 96px;
-    height: 96px;
-    border-radius: 50%;
-    z-index: 20;
-  }
-
-  @keyframes spin {
-    25% {
-      transform: translateX(-78px) rotate(90deg);
-    }
-
-    50% {
-      transform: translateX(0) rotate(180deg);
-      z-index: 30;
-    }
-
-    75% {
-      transform: translateX(100px) rotate(270deg);
-    }
-
-    100% {
-      transform: translateX(0) rotate(0);
-      z-index: 10;
-    }
+  @keyframes rotate {
+    0% {  transform: rotate(0)}
+    100% { transform: rotate(360deg)}
   }
 </style>

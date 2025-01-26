@@ -1,32 +1,49 @@
 <script lang="ts">
-  import LauncherSetup from "$lib/launcher-setup/LauncherSetup.svelte";
-  import SplashHeader from "$lib/launcher-setup/components/SplashHeader.svelte";
-  import SplashBackground from "$lib/launcher-setup/components/SplashBackground.svelte";
+  import WindowHeader from "/src/lib/components/window/WindowHeader.svelte";
+  import WindowBackground from "/src/lib/components/window/WindowBackground.svelte";
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
+  import LauncherSetup from "/src/routes/launcher-setup/LauncherSetup.svelte";
+  import { navigate, Route, Router } from "svelte-navigator";
+  import { onMount } from "svelte";
+  import { AppStore } from "$lib/stores/AppStore";
+  import LauncherVersion from "$lib/components/LauncherVersion.svelte";
+  import GameSelection from "/src/routes/game-selection/GameSelection.svelte";
 
-  let requiresSetup = false;
-  let isLoading = true;
+  onMount(async () => {
+    console.log("navigate to launcher setup");
+    navigate("/launcher-setup");
+  });
+
 </script>
 
-<SplashHeader />
+<WindowHeader />
 
-<div class="splash-container">
-  <!-- Background With two images -->
-  <SplashBackground />
+<Router>
+  <div class="splash-container">
+    <!-- Background With two images -->
+    <WindowBackground />
 
-  <div class="splash-content">
-    {#if requiresSetup}
-      <LauncherSetup></LauncherSetup>
-    {:else}
-      {#if isLoading}
+    <div class="splash-content">
+      {#if $AppStore.isLoading}
         <div class="main-content-centered mb-12">
           <LoadingSpinner></LoadingSpinner>
         </div>
       {/if}
-    {/if}
-  </div>
-</div>
 
+      <div class="main-content-centered" class:!hidden={$AppStore.isLoading}>
+        <Route path="/launcher-setup">
+          <LauncherSetup></LauncherSetup>
+        </Route>
+        {#if $AppStore.isSetupCompleted}
+          <Route path="/game-selection">
+            <GameSelection></GameSelection>
+          </Route>
+          <LauncherVersion></LauncherVersion>
+        {/if}
+      </div>
+    </div>
+  </div>
+</Router>
 
 <style lang="postcss">
   .splash-container {
