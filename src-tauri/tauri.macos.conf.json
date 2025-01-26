@@ -1,0 +1,23 @@
+{
+  "app": {
+    "windows": [
+      {
+        "title": "OpenGOAL Launcher",
+        "label": "main",
+        "width": 1387,
+        "height": 780,
+        "center": true,
+        "decorations": true,
+        "transparent": true,
+        "resizable": true,
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true,
+        "fullscreen": false,
+        "url": "./src/splash/index.html",
+        "visible": true,
+        "focus": true,
+        "useHttpsScheme": true
+      }
+    ]
+  }
+}

@@ -1,21 +1,19 @@
-import { toastStore } from "$lib/stores/ToastStore";
 import { arch, platform } from "@tauri-apps/plugin-os";
-import { unwrapFunctionStore, format } from "svelte-i18n";
-
-const $format = unwrapFunctionStore(format);
+import type { GithubRelease } from "$lib/utils/githubRelease";
+import { allReleases } from "$lib/utils/allReleases";
+import { currentRelease } from "$lib/utils/latestRelease";
 
 export interface ReleaseInfo {
   version: string;
-  date: string | undefined;
-  githubLink: string | undefined;
-  downloadUrl: string | undefined;
+  date?: Date;
+  githubLink?: string;
+  downloadUrl?: string;
   isDownloaded: boolean;
   pendingAction: boolean;
   invalid: boolean;
   invalidationReasons: string[];
 }
-
-function getDownloadLinkForCurrentPlatform(release) {
+function getDownloadLinkForCurrentPlatform(release: GithubRelease) {
   let plat = platform();
   let matchingAsset;
   if (plat == "macos") {
@@ -40,83 +38,75 @@ function getDownloadLinkForCurrentPlatform(release) {
   }
   return undefined;
 }
-
-async function parseGithubRelease(githubRelease: any): Promise<ReleaseInfo> {
+function parseGithubRelease(githubRelease: GithubRelease): ReleaseInfo {
   const releaseInfo: ReleaseInfo = {
     version: githubRelease.tag_name,
-    date: githubRelease.published_at,
+    date: new Date(githubRelease.published_at),
     githubLink: githubRelease.html_url,
-    downloadUrl: await getDownloadLinkForCurrentPlatform(githubRelease),
+    downloadUrl: getDownloadLinkForCurrentPlatform(githubRelease),
     isDownloaded: false,
     pendingAction: false,
     invalid: false,
     invalidationReasons: [],
   };
-  if (githubRelease.body.includes("<!-- invalid:")) {
+  if (releaseInfo.downloadUrl == null) {
     releaseInfo.invalid = true;
-    // Get the line it's on
-    try {
-      const line = githubRelease.body
-        .split("<!-- invalid:")[1]
-        .split("-->")[0]
-        .trim();
-      releaseInfo.invalidationReasons = line.split("|");
-    } catch (err) {
-      // do nothing, bad formatting
-      releaseInfo.invalidationReasons = ["Release invalid for unknown reasons"];
-    }
   }
 
   return releaseInfo;
 }
 
 export async function listOfficialReleases(): Promise<ReleaseInfo[]> {
-  const nextUrlPattern = /<([\S]+)>; rel="Next"/i;
-  let releases = [];
-  let urlToHit =
+  const nextUrlPattern = /<(\S+)>; rel="Next"/i;
+  let releases: ReleaseInfo[] = [];
+  let urlToHit: string | undefined =
     "https://api.github.com/repos/open-goal/jak-project/releases?per_page=100";
 
   while (urlToHit !== undefined) {
-    const resp = await fetch(urlToHit);
-    if (resp.status === 403 || resp.status === 429) {
-      toastStore.makeToast($format("toasts_githubRateLimit"), "error");
-      return [];
-    } else if (!resp.ok) {
-      toastStore.makeToast($format("toasts_githubUnexpectedError"), "error");
-      return [];
-    }
+    // const resp = await fetch(urlToHit);
+    // const githubReleases = await resp.json() as GithubRelease[];
 
-    const githubReleases = await resp.json();
+    const githubReleases = allReleases;
     for (const release of githubReleases) {
-      releases.push(await parseGithubRelease(release));
+      releases.push(parseGithubRelease(release));
     }
 
-    if (
-      resp.headers.has("link") &&
-      resp.headers.get("link").includes(`rel=\"next\"`)
-    ) {
-      // we must paginate!
-      urlToHit = resp.headers.get("link").match(nextUrlPattern)[1];
-    } else {
-      urlToHit = undefined;
-    }
+    urlToHit = undefined;
+
+    // const link = resp.headers.get("link");
+    // if (
+    //   link != null &&
+    //   link.includes(`rel=\"next\"`)
+    // ) {
+    //   // we must paginate!
+    //   const match = link.match(nextUrlPattern);
+    //   if (match != null) {
+    //     urlToHit = match[1];
+    //   }
+    // }
   }
-  return releases.sort((a, b) => b.date.localeCompare(a.date));
+  return releases.sort((a, b) => {
+    if (b.date == null) {
+      return 1;
+    }
+    if (a.date == null) {
+      return -1;
+    }
+    if (b.date == a.date) {
+      return 0;
+    }
+    return b.date < a.date ? -1 : 1;
+  });
 }
 
 export async function getLatestOfficialRelease(): Promise<
   ReleaseInfo | undefined
 > {
-  const resp = await fetch(
-    "https://api.github.com/repos/open-goal/jak-project/releases/latest",
-  );
-  if (resp.status === 403 || resp.status === 429) {
-    toastStore.makeToast($format("toasts_githubRateLimit"), "error");
-    return undefined;
-  } else if (!resp.ok) {
-    toastStore.makeToast($format("toasts_githubUnexpectedError"), "error");
-    return undefined;
-  }
-  const githubRelease = await resp.json();
-  return await parseGithubRelease(githubRelease);
+  // const resp = await fetch(
+  //   "https://api.github.com/repos/open-goal/jak-project/releases/latest",
+  // );
+  // const githubRelease = await resp.json() as GithubRelease;
+
+  const githubRelease = currentRelease;
+  return parseGithubRelease(githubRelease);
 }

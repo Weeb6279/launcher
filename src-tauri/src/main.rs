@@ -216,7 +216,6 @@ fn main() {
       commands::versions::list_downloaded_versions,
       commands::versions::remove_version,
       commands::window::open_dir_in_os,
-      commands::window::open_main_window,
     ])
     .build(tauri::generate_context!())
     .map_err(|err| {
