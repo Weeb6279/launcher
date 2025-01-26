@@ -64,3 +64,7 @@
 .main-content-centered {
   @apply flex flex-col flex-grow min-h-0 justify-center items-center p-2;
 }
+
+.default-button {
+  @apply bg-secondary text-secondary hover:bg-secondary-hover hover:text-secondary-hover rounded flex flex-row gap-3 justify-start;
+}

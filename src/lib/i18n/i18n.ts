@@ -16,7 +16,7 @@ export const AVAILABLE_LOCALES: Locale[] = [
     id: "af-ZA",
     flag: "🇿🇦",
     localizedName: "Afrikaans",
-    rtl: false
+    rtl: false,
   },
   {
     id: "ar-SA",
@@ -26,85 +26,85 @@ export const AVAILABLE_LOCALES: Locale[] = [
     fontFileName: "NotoSansArabic-VariableFont.woff2",
     fontDownloadUrl:
       "https://github.com/open-goal/launcher-assets/releases/download/fonts%2Fv1.0.0/NotoSansArabic-VariableFont.woff2",
-    rtl: true
+    rtl: true,
   },
   {
     id: "ca-ES",
     flag: "🇪🇸",
     localizedName: "Català",
-    rtl: false
+    rtl: false,
   },
   {
     id: "cs-CZ",
     flag: "🇨🇿",
     localizedName: "Čeština",
-    rtl: false
+    rtl: false,
   },
   {
     id: "da-DK",
     flag: "🇩🇰",
     localizedName: "Dansk",
-    rtl: false
+    rtl: false,
   },
   {
     id: "de-DE",
     flag: "🇩🇪",
     localizedName: "Deutsch",
-    rtl: false
+    rtl: false,
   },
   {
     id: "el-GR",
     flag: "🇬🇷",
     localizedName: "Ελληνικά",
-    rtl: false
+    rtl: false,
   },
   {
     id: "en-US",
     flag: "🇺🇸",
     localizedName: "English",
-    rtl: false
+    rtl: false,
   },
   {
     id: "en-GB",
     flag: "🇬🇧",
     localizedName: "English UK",
-    rtl: false
+    rtl: false,
   },
   {
     id: "es-ES",
     flag: "🇪🇸",
     localizedName: "Español",
-    rtl: false
+    rtl: false,
   },
   {
     id: "fi-FI",
     flag: "🇫🇮",
     localizedName: "Suomi",
-    rtl: false
+    rtl: false,
   },
   {
     id: "fr-FR",
     flag: "🇫🇷",
     localizedName: "Français",
-    rtl: false
+    rtl: false,
   },
   {
     id: "he-IL",
     flag: "🇮🇱",
     localizedName: "עברית",
-    rtl: true
+    rtl: true,
   },
   {
     id: "hu-HU",
     flag: "🇭🇺",
     localizedName: "Magyar",
-    rtl: false
+    rtl: false,
   },
   {
     id: "it-IT",
     flag: "🇮🇹",
     localizedName: "Italiano",
-    rtl: false
+    rtl: false,
   },
   {
     id: "ja-JP",
@@ -114,7 +114,7 @@ export const AVAILABLE_LOCALES: Locale[] = [
     fontFileName: "NotoSansJP-VariableFont.woff2",
     fontDownloadUrl:
       "https://github.com/open-goal/launcher-assets/releases/download/fonts%2Fv1.0.0/NotoSansJP-VariableFont.woff2",
-    rtl: false
+    rtl: false,
   },
   {
     id: "ko-KR",
@@ -124,85 +124,85 @@ export const AVAILABLE_LOCALES: Locale[] = [
     fontFileName: "NotoSansKR-VariableFont_wght.woff2",
     fontDownloadUrl:
       "https://github.com/open-goal/launcher-assets/releases/download/fonts%2Fv1.0.0/NotoSansKR-VariableFont_wght.woff2",
-    rtl: false
+    rtl: false,
   },
   {
     id: "lt-LT",
     flag: "🇱🇹",
     localizedName: "Lietuvių kalba",
-    rtl: false
+    rtl: false,
   },
   {
     id: "nl-NL",
     flag: "🇳🇱",
     localizedName: "Nederlands",
-    rtl: false
+    rtl: false,
   },
   {
     id: "no-NO",
     flag: "🇳🇴",
     localizedName: "Norsk",
-    rtl: false
+    rtl: false,
   },
   {
     id: "pl-PL",
     flag: "🇵🇱",
     localizedName: "Polski",
-    rtl: false
+    rtl: false,
   },
   {
     id: "pt-BR",
     flag: "🇧🇷",
     localizedName: "Português",
-    rtl: false
+    rtl: false,
   },
   {
     id: "pt-PT",
     flag: "🇵🇹",
     localizedName: "Português",
-    rtl: false
+    rtl: false,
   },
   {
     id: "ro-RO",
     flag: "🇷🇴",
     localizedName: "Română",
-    rtl: false
+    rtl: false,
   },
   {
     id: "ru-RU",
     flag: "🇷🇺",
     localizedName: "Русский",
-    rtl: false
+    rtl: false,
   },
   {
     id: "sr-SP",
     flag: "🇷🇸",
     localizedName: "Srpski",
-    rtl: false
+    rtl: false,
   },
   {
     id: "sv-SE",
     flag: "🇸🇪",
     localizedName: "Svenska",
-    rtl: false
+    rtl: false,
   },
   {
     id: "tr-TR",
     flag: "🇹🇷",
     localizedName: "Türkçe",
-    rtl: false
+    rtl: false,
   },
   {
     id: "uk-UA",
     flag: "🇺🇦",
     localizedName: "Українська",
-    rtl: false
+    rtl: false,
   },
   {
     id: "vi-VN",
     flag: "🇻🇳",
     localizedName: "Tiếng Việt",
-    rtl: false
+    rtl: false,
   },
   {
     id: "zh-CN",
@@ -212,7 +212,7 @@ export const AVAILABLE_LOCALES: Locale[] = [
     fontFileName: "NotoSansSC-VariableFont_wght.woff2",
     fontDownloadUrl:
       "https://github.com/open-goal/launcher-assets/releases/download/fonts%2Fv1.0.0/NotoSansSC-VariableFont_wght.woff2",
-    rtl: false
+    rtl: false,
   },
   {
     id: "zh-TW",
@@ -222,10 +222,11 @@ export const AVAILABLE_LOCALES: Locale[] = [
     fontFileName: "NotoSansTC-VariableFont_wght.woff2",
     fontDownloadUrl:
       "https://github.com/open-goal/launcher-assets/releases/download/fonts%2Fv1.0.0/NotoSansTC-VariableFont_wght.woff2",
-    rtl: false
+    rtl: false,
   },
 ];
 
+// fire whoever did this
 export async function initLocales(async: boolean) {
   if (async) {
     for (const locale of AVAILABLE_LOCALES) {
@@ -242,13 +243,8 @@ export async function initLocales(async: boolean) {
       );
     }
   }
-  const initPromise = init({
+  return init({
     fallbackLocale: "en-US",
     initialLocale: "en-US",
   });
-  if (!async) {
-    await initPromise;
-  } else {
-    return initPromise;
-  }
 }

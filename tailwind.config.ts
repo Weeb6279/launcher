@@ -17,7 +17,11 @@ export default {
         primary: 'var(--bg-primary)',
         'primary-hover': '#f75c00',
         secondary: '#311c10',
-        'secondary-hover': '#4d2a16'
+        'secondary-hover': '#4d2a16',
+        table: 'rgb(31, 41, 55)'
+      },
+      borderColor: {
+        table: 'rgb(55, 65, 81)'
       },
       textColor: {
         'background': 'rgb(227, 227, 227)',

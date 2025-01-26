@@ -1,16 +1,18 @@
 <script lang="ts">
   import { _ } from "svelte-i18n";
-  import { onMount } from "svelte";
-  import { getVersion } from "@tauri-apps/api/app";
+  import { AppStore } from "$lib/stores/AppStore";
 
-  let clientVersion: string;
-  onMount(async () => {
-    clientVersion = await getVersion();
-  });
 </script>
 
-{#if clientVersion != null}
-  <div class="self-start text-background font-default-shadow">
-    {$_("header_launcherVersionLabel")} v{clientVersion}
-  </div>
-{/if}
+<div class="self-start text-background font-default-shadow flex flex-col">
+  {#if $AppStore.launcher.activeVersion != null}
+    <span>
+      {$_("header_launcherVersionLabel")} v{$AppStore.launcher.activeVersion}
+    </span>
+  {/if}
+  {#if $AppStore.selectedTooling.activeVersion != null}
+    <span>
+      {$_("header_toolingVersionLabel")} {$AppStore.selectedTooling.activeVersion}
+    </span>
+  {/if}
+</div>

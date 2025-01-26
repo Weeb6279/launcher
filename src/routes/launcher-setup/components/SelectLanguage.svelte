@@ -18,7 +18,7 @@
   <div class="grid grid-cols-3 gap-3 flex-shrink-0 pr-5 min-h-0">
     {#each AVAILABLE_LOCALES as locale}
       <Button
-        class="bg-secondary text-secondary hover:bg-secondary-hover hover:text-secondary-hover rounded flex flex-row gap-3 justify-start"
+        class="default-button"
         on:click={() => selectLocale(locale)}>
         <span class="grow-0">{locale.flag}</span>
         <span>{locale.localizedName}</span>

@@ -6,7 +6,7 @@ import { polyfillCountryFlagEmojis } from "country-flag-emoji-polyfill";
 polyfillCountryFlagEmojis();
 
 // Register Translations
-initLocales(true);
+await initLocales(true);
 
 const app = new App({
   target: document.getElementById("app")!,

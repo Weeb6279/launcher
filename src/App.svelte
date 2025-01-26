@@ -38,8 +38,8 @@
           <Route path="/game-selection">
             <GameSelection></GameSelection>
           </Route>
-          <LauncherVersion></LauncherVersion>
         {/if}
+        <LauncherVersion></LauncherVersion>
       </div>
     </div>
   </div>

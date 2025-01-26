@@ -1,16 +1,49 @@
 import { writable } from "svelte/store";
 
-export const AppStore = writable({
+type LauncherSchema = {
+  updateAvailable: boolean;
+  /**
+   * The version of the latest version on github
+   */
+  versionNumber?: string;
+  /**
+   * The version currently installed
+   */
+  activeVersion?: string;
+  changeLog: string[];
+  date?: Date;
+  installationDirectory?: string;
+};
+
+type ToolingSchema = {
+  updateAvailable: boolean;
+  /**
+   * The version of the latest version on github
+   */
+  versionNumber?: string;
+  /**
+   * The version currently installed
+   */
+  activeVersion?: string;
+  autoUpdate: boolean;
+};
+
+type Schema = {
+  isLoading: boolean;
+  isSetupCompleted: boolean;
+  launcher: LauncherSchema;
+  selectedTooling: ToolingSchema;
+};
+
+export const AppStore = writable<Schema>({
   isLoading: true,
   isSetupCompleted: false,
   launcher: {
     updateAvailable: false,
-    versionNumber: undefined,
     changeLog: [],
-    date: undefined,
   },
   selectedTooling: {
     updateAvailable: false,
-    versionNumber: undefined,
+    autoUpdate: true
   },
 });
